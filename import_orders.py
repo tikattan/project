@@ -23,15 +23,27 @@ import json
 INCLUDE_HEADER=['index 0','BE LOGO','HEADER']
 DEBUG = True
 ORDER_BATCH_FILE_HEADERS=20
-USERNAME='beserve'
 
-# logistics site password
-PASSWORD='4winter5'
-# local password
-PASSWORD='beserve'
+'''
+# E-commerce/dev server
+# FOR ADD ORDER TEST => python import_orders.py be.xls BEX BE001
+USERNAME='sabuy_admin'
+PASSWORD='1234'
+URL='http://dev.apitrans.com/api/orders/'
+'''
 
-URL='http://localhost:8000/api/orders/'
-# URL='http://logistics.apitrans.com/api/orders/'
+
+# PRODUCT SERVER USERNAME/PASSWORD
+# USERNAME = 'be_admin'
+# PASSWORD = '5winter4'
+
+# SABUY PRODUCT/ USERNAME/PASSWORD
+USERNAME = 'true_admin'
+PASSWORD = '1234'
+URL='http://beserve.apitrans.com/api/orders/'
+
+
+# URL='http://localhost:8000/api/orders/'
 
 def log(msg, *args):
     sys.stdout.write((args and (msg % args) or msg))
@@ -45,7 +57,7 @@ def send_request(_order):
     req = urllib2.Request(URL)
     req.add_header('Content-Type', 'application/json; charset=utf-8')
     req.add_header('AUTHORIZATION',_get_basic_http_auth(USERNAME,PASSWORD))
-    print json.dumps(order, sort_keys=True,indent=4, separators=(',', ': '))
+    # print json.dumps(order, sort_keys=True,indent=4, separators=(',', ': '))
     response = urllib2.urlopen(req, json.dumps(_order, sort_keys=True,indent=4, separators=(',', ': ')))
 
 if __name__ == "__main__":
@@ -107,7 +119,11 @@ if __name__ == "__main__":
                     order['ecommerce_order_id']=sheet.cell(row, 0).value
                 order['merchant']=merchant
                 customer=dict()
-                customer['customer_id']=sheet.cell(row, 1).value
+                if type(sheet.cell(row, 1).value)==float:
+                    customer['customer_id']=int(sheet.cell(row, 1).value)
+                else:
+                    customer['customer_id']=sheet.cell(row, 1).value
+
                 customer['name']=sheet.cell(row, 2).value
                 customer['address1']=sheet.cell(row, 3).value
                 customer['address2']=sheet.cell(row, 4).value
